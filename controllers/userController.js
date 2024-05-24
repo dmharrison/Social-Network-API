@@ -39,4 +39,38 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+  //Update user by id
+  updateUser: async (req, res) => {
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(400).json({ message: "User not found" });
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
+  //delete user
+  deleteUser: async (req, res) => {
+    try {
+      const deletedUser = await User.findOneAndDelete({
+        _id: req.params.userId,
+      });
+
+      if (!deletedUser) {
+        return res.status(400).json({ message: "User not found" });
+      }
+
+      return res.status(200).json(deletedUser);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
 };
