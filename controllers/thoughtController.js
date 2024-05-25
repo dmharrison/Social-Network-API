@@ -24,4 +24,44 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+  // Create a new thought
+  createThought: async (req, res) => {
+    try {
+      const newThought = await Thought.create(req.body);
+      const user = await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $push: { thoughts: newThought._id } },
+        { new: true }
+      );
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "Thought created but no user with this id!" });
+      }
+
+      return res.status(200).json(newThought);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
+  // Update a thought by ID
+  updateThought: async (req, res) => {
+    try {
+      const updatedThought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!updatedThought) {
+        return res.status(404).json({ message: "No thought with this id!" });
+      }
+
+      return res.status(200).json(updatedThought);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
 };
