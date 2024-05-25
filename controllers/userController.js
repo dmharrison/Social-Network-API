@@ -4,7 +4,10 @@ module.exports = {
   //Get all users
   getUsers: async (req, res) => {
     try {
-      const Users = await User.find().select("-__v");
+      const Users = await User.find()
+        .populate("thoughts")
+        .populate("friends")
+        .select("-__v");
       return res.status(200).json(Users);
     } catch (err) {
       return res.status(400).json(err);
