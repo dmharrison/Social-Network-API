@@ -4,10 +4,7 @@ module.exports = {
   //Get all users
   getUsers: async (req, res) => {
     try {
-      const Users = await User.find()
-        .populate("thoughts")
-        .populate("friends")
-        .select("-__v");
+      const Users = await User.find().select("-__v");
       return res.status(200).json(Users);
     } catch (err) {
       return res.status(400).json(err);
@@ -16,12 +13,14 @@ module.exports = {
   //Get user by id
   getSingleUser: async (req, res) => {
     try {
-      const user = await User.findone({ _id: req.params.userId })
+      console.log(`Fetching user with ID: ${req.params.userId}`);
+      const user = await User.findOne({ _id: req.params.userId })
         .populate("thoughts")
         .populate("friends")
         .select("-__v");
-
+      console.log("User found:", user);
       if (!user) {
+        console.log("No user found with that ID");
         return res.status(400).json({ message: "No user by that ID" });
       }
 
